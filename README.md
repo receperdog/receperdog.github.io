@@ -4,7 +4,7 @@ A modern, responsive personal portfolio website built with React, TypeScript, an
 
 ## Live Demo
 
-Visit the portfolio at [receperdog.github.io/receperdogan.github.io](https://receperdog.github.io/receperdogan.github.io)
+Visit the portfolio at [receperdog.github.io](https://receperdog.github.io)
 
 ## Features
 
@@ -34,8 +34,8 @@ Visit the portfolio at [receperdog.github.io/receperdogan.github.io](https://rec
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/receperdog/receperdogan.github.io.git
-   cd receperdogan.github.io
+   git clone https://github.com/receperdog/receperdog.github.io.git
+   cd receperdog.github.io
    ```
 
 2. Install dependencies:
@@ -75,58 +75,7 @@ GitHub Pages will automatically deploy from the `/docs` folder in the main branc
 
 ## Handling 404 Errors
 
-Since this is a single-page application (SPA), you might experience 404 errors when directly accessing routes or refreshing pages. To fix this:
-
-1. Create a custom 404.html file in the docs directory:
-   ```bash
-   touch docs/404.html
-   ```
-
-2. Add a script to redirect back to the index page with the correct route:
-   ```html
-   <!DOCTYPE html>
-   <html>
-   <head>
-     <meta charset="utf-8">
-     <title>Recep Erdogan | Software Engineer</title>
-     <script>
-       // Single Page Apps for GitHub Pages
-       // https://github.com/rafgraph/spa-github-pages
-       var pathSegmentsToKeep = 1;
-       var l = window.location;
-       l.replace(
-         l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-         l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-         l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-         (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-         l.hash
-       );
-     </script>
-   </head>
-   <body>
-     <p>Redirecting to portfolio...</p>
-   </body>
-   </html>
-   ```
-
-3. Add a script to your index.html to handle the redirect:
-   ```html
-   <!-- In the <head> section of your index.html -->
-   <script type="text/javascript">
-     // Single Page Apps for GitHub Pages
-     // https://github.com/rafgraph/spa-github-pages
-     (function(l) {
-       if (l.search[1] === '/' ) {
-         var decoded = l.search.slice(1).split('&').map(function(s) { 
-           return s.replace(/~and~/g, '&')
-         }).join('?');
-         window.history.replaceState(null, null,
-            l.pathname.slice(0, -1) + decoded + l.hash
-         );
-       }
-     }(window.location))
-   </script>
-   ```
+Since this is a single-page application (SPA), a custom 404.html file is included to handle client-side routing on GitHub Pages. This ensures that direct navigation to routes like `/projects` works correctly without showing 404 errors.
 
 ## Customization
 
@@ -138,7 +87,7 @@ Since this is a single-page application (SPA), you might experience 404 errors w
 ## Folder Structure
 
 ```
-receperdogan.github.io/
+receperdog.github.io/
 ├─ src/
 │  ├─ pages/              # Page components
 │  │  ├─ home/
