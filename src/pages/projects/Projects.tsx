@@ -1,190 +1,169 @@
 import { useState } from 'react';
-import { ProjectItem } from './subcomponents/ProjectItem';
 
 interface Project {
   id: number;
   title: string;
   description: string;
   technologies: string[];
-  imageUrl?: string;
-  iconBg: string;
-  iconColor: string;
-  demoUrl?: string;
-  codeUrl?: string;
+  codeUrl: string;
 }
 
-// Real project data from GitHub repositories
 const projects: Project[] = [
   {
     id: 1,
     title: "Twitter Clone",
-    description: "A full-featured social media application that replicates core Twitter functionality with enhanced user engagement features and a monorepo architecture.",
-    technologies: ["Java", "Spring Boot", "RESTful APIs", "Microservices"],
-    iconBg: "#3b82f6",
-    iconColor: "#fff",
+    description: "A full-featured social media application that replicates core Twitter functionality with microservices architecture.",
+    technologies: ["Java", "Spring Boot", "Microservices", "RESTful APIs"],
     codeUrl: "https://github.com/receperdog/twitter-clone-monorepo"
   },
   {
     id: 2,
-    title: "Spring-Transaction-Exploration",
-    description: "Explore Spring's @Transactional behavior through a user management setup, demonstrating propagation levels like REQUIRED and REQUIRES_NEW and transaction management intricacies.",
-    technologies: ["Java", "Spring Boot", "Spring Transactions", "JUnit"],
-    iconBg: "#10b981",
-    iconColor: "#fff",
-    codeUrl: "https://github.com/receperdog/Spring-Transaction-Exploration"
-  },
-  {
-    id: 3,
-    title: "File Manager API",
-    description: "Advanced File Management API built with Spring Boot. Features include efficient file storage, retrieval as bytearray, stringent file restrictions, JWT-based security, and robust logging.",
-    technologies: ["Java", "Spring Boot", "JWT", "Security"],
-    iconBg: "#6366f1",
-    iconColor: "#fff",
-    codeUrl: "https://github.com/receperdog/file-manager-api"
-  },
-  {
-    id: 4,
-    title: "Blockchain Voting System",
-    description: "A secure and transparent blockchain-based voting system implemented with Java Spring Boot, featuring a modular architecture, efficient synchronization, and robust security measures.",
-    technologies: ["Java", "Spring Boot", "Blockchain", "Security"],
-    iconBg: "#8b5cf6",
-    iconColor: "#fff",
-    codeUrl: "https://github.com/receperdog/blockchain_project_v1.0"
-  },
-  {
-    id: 5,
-    title: "DataForge",
-    description: "A comprehensive Java library offering a wide range of fundamental data structures and algorithms, meticulously implemented for educational purposes and software development.",
-    technologies: ["Java", "Data Structures", "Algorithms"],
-    iconBg: "#f59e0b",
-    iconColor: "#fff",
-    codeUrl: "https://github.com/receperdog/DataForge"
-  },
-  {
-    id: 6,
     title: "FlavorOps",
-    description: "DevOps and infrastructure management tool built with C# and ASP.NET Core, focused on streamlining deployment workflows and containerization.",
+    description: "DevOps and infrastructure management tool built with C# and ASP.NET Core, focused on deployment workflows.",
     technologies: ["C#", "ASP.NET Core", "DevOps", "Docker"],
-    iconBg: "#ec4899",
-    iconColor: "#fff",
     codeUrl: "https://github.com/receperdog/FlavorOps"
   },
   {
+    id: 3,
+    title: "Blockchain Voting System",
+    description: "A secure and transparent blockchain-based voting system with modular architecture and robust security measures.",
+    technologies: ["Java", "Spring Boot", "Blockchain", "Security"],
+    codeUrl: "https://github.com/receperdog/blockchain_project_v1.0"
+  },
+  {
+    id: 4,
+    title: "Spring Transaction Exploration",
+    description: "Explore Spring's @Transactional behavior demonstrating propagation levels and transaction management.",
+    technologies: ["Java", "Spring Boot", "Spring Transactions", "JUnit"],
+    codeUrl: "https://github.com/receperdog/Spring-Transaction-Exploration"
+  },
+  {
+    id: 5,
+    title: "File Manager API",
+    description: "Advanced File Management API with efficient file storage, JWT-based security, and robust logging.",
+    technologies: ["Java", "Spring Boot", "JWT", "Security"],
+    codeUrl: "https://github.com/receperdog/file-manager-api"
+  },
+  {
+    id: 6,
+    title: "DataForge",
+    description: "A comprehensive Java library offering fundamental data structures and algorithms for educational purposes.",
+    technologies: ["Java", "Data Structures", "Algorithms"],
+    codeUrl: "https://github.com/receperdog/DataForge"
+  },
+  {
     id: 7,
-    title: "dotnet-chronicles",
-    description: "My learning journey through .NET technologies and experiments, featuring ASP.NET Core projects, Entity Framework Core, and Blazor framework implementations.",
+    title: ".NET Chronicles",
+    description: "Learning journey through .NET technologies featuring ASP.NET Core, Entity Framework, and Blazor implementations.",
     technologies: ["C#", "ASP.NET Core", "Entity Framework", "Blazor"],
-    iconBg: "#6d28d9",
-    iconColor: "#fff",
     codeUrl: "https://github.com/receperdog/dotnet-chronicles"
   }
 ];
 
 export function ProjectsPage() {
-  // Filter state for technology filters
-  const [filters, setFilters] = useState<string[]>([]);
-
-  // Available technology filters based on project data
-  const availableTechnologies = Array.from(
-    new Set(projects.flatMap(project => project.technologies))
+  const [filter, setFilter] = useState<string | null>(null);
+  
+  const technologies = Array.from(
+    new Set(projects.flatMap(p => p.technologies))
   ).sort();
-
-  // Toggle filter selection
-  const toggleFilter = (tech: string) => {
-    if (filters.includes(tech)) {
-      setFilters(filters.filter(t => t !== tech));
-    } else {
-      setFilters([...filters, tech]);
-    }
-  };
-
-  // Filter projects based on selected technologies
-  const filteredProjects = filters.length === 0
-    ? projects
-    : projects.filter(project => 
-        filters.some(filter => project.technologies.includes(filter))
-      );
+  
+  const filteredProjects = filter
+    ? projects.filter(p => p.technologies.includes(filter))
+    : projects;
 
   return (
-    <section id="projects" className="py-20 bg-gray-50 dark:bg-gray-900">
+    <section id="projects" className="py-24 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-6">My Projects</h2>
-        <p className="text-center max-w-3xl mx-auto mb-6 text-gray-600 dark:text-gray-300">
-          I'm proficient in Java and also working with ASP.NET Core technologies.
-        </p>
-        
-        {/* Filter guidance */}
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-8 max-w-3xl mx-auto text-center border border-blue-100 dark:border-blue-800">
-          <p className="text-gray-700 dark:text-gray-300">
-            <span className="font-medium">Filter projects by technology:</span> Click on any tag below to see projects using that specific technology. Click multiple tags to refine your search.
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl font-bold mb-4 text-center">Projects</h2>
+          <p className="text-gray-500 dark:text-gray-400 text-center mb-8">
+            Open source projects and experiments
           </p>
-        </div>
-        
-        {/* Filter section */}
-        <div className="mb-12">
-          <div className="flex flex-wrap justify-center gap-2 mb-2">
-            {availableTechnologies.map(tech => (
+          
+          {/* Filter */}
+          <div className="flex flex-wrap justify-center gap-2 mb-12">
+            <button
+              onClick={() => setFilter(null)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                filter === null
+                  ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+              }`}
+            >
+              All
+            </button>
+            {technologies.map(tech => (
               <button
                 key={tech}
-                onClick={() => toggleFilter(tech)}
-                className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                  filters.includes(tech)
-                    ? tech === "Java" || tech === "Spring Boot" || tech === "Spring Transactions" || tech === "Microservices"
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-gray-800 text-white dark:bg-gray-200 dark:text-gray-800'
-                    : tech === "Java" || tech === "Spring Boot" || tech === "Spring Transactions" || tech === "Microservices"
-                      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800' 
-                      : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                onClick={() => setFilter(tech)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  filter === tech
+                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900'
+                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                 }`}
               >
                 {tech}
               </button>
             ))}
           </div>
-          {filters.length > 0 && (
-            <div className="text-center">
-              <button
-                onClick={() => setFilters([])}
-                className="text-blue-600 dark:text-blue-400 text-sm hover:underline"
+          
+          {/* Projects Grid */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {filteredProjects.map(project => (
+              <div 
+                key={project.id}
+                className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 transition-colors"
               >
-                Clear filters
-              </button>
-            </div>
-          )}
-        </div>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project) => (
-            <ProjectItem 
-              key={project.id}
-              title={project.title}
-              description={project.description}
-              technologies={project.technologies}
-              iconBg={project.iconBg}
-              iconColor={project.iconColor}
-              demoUrl={project.demoUrl}
-              codeUrl={project.codeUrl}
-            />
-          ))}
-        </div>
-        
-        {/* No results message */}
-        {filteredProjects.length === 0 && (
-          <div className="text-center py-16">
-            <h3 className="text-xl mb-2">No projects match the selected filters</h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              Try selecting different technologies or 
-              <button
-                onClick={() => setFilters([])}
-                className="text-blue-600 dark:text-blue-400 mx-1 hover:underline"
-              >
-                clear all filters
-              </button>
-              to see all projects.
-            </p>
+                <div className="flex items-start justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {project.title}
+                  </h3>
+                  <a 
+                    href={project.codeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                  </a>
+                </div>
+                
+                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                  {project.description}
+                </p>
+                
+                <div className="flex flex-wrap gap-2">
+                  {project.technologies.map((tech, index) => (
+                    <span 
+                      key={index}
+                      className="px-2.5 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-md"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
-        )}
+          
+          {/* GitHub Link */}
+          <div className="text-center mt-12">
+            <a 
+              href="https://github.com/receperdog"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+              View more on GitHub
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   );
-} 
+}
